@@ -9,6 +9,6 @@ app.use(express.static(
   path.resolve(__dirname, "public")
 ));
 
-app.listen(3000, () => console.log("Starting up Top 40 Search"));
+app.listen(3000, () => console.log("Starting up Frog Jump app"));
 
 
