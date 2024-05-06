@@ -1,3 +1,5 @@
+const { request } = require("express");
+
 // creating the board
 let board;
 let boardWidth = 360;
@@ -19,6 +21,11 @@ let frog = {
     height: frogHeight
 }
 
+let gameover = false;
+let velocityX, velocityY = 0;
+let initVelocity = -8; //starting y velocity for frog
+let gravity = 0.5;
+
 window.onload = function(){
     board = document.getElementById("board");
     board.width = boardWidth;
@@ -26,7 +33,7 @@ window.onload = function(){
     context = board.getContext("2d");
 
     context.fillStyle = "blue";
-    context.fillRect(frog.x, frog.y, frog.width, frog.height);
+    //context.fillRect(frog.x, frog.y, frog.width, frog.height);
 
     frogImg = new Image();
     frogImg.src = "../images/frog.png";
@@ -36,6 +43,16 @@ window.onload = function(){
         context.drawImage(frog.img, frog.x, frog.y, frog.width, frog.height);
     }
 }
+
+function updateFrog(){
+    requestAnimationFrame(updateFrog);
+
+    if(gameover){
+        return;
+    }
+
+    context.clearRect(0, 0, board.width, board.height);
+} 
 
 
 
