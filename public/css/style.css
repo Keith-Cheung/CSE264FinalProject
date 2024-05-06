@@ -3,6 +3,7 @@ body {
 }
 
 #board{
-  background-image: url('../images/appbackground.png');
+  background-image: url("../images/appbackground.png");
 }
+
 
