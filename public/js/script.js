@@ -1,4 +1,4 @@
-const { request } = require("express");
+//const { request } = require("express");
 
 // creating the board
 let board;
@@ -33,7 +33,7 @@ window.onload = function(){
     context = board.getContext("2d");
 
     context.fillStyle = "blue";
-    //context.fillRect(frog.x, frog.y, frog.width, frog.height);
+    context.fillRect(frog.x, frog.y, frog.width, frog.height);
 
     frogImg = new Image();
     frogImg.src = "../images/frog.png";
@@ -52,6 +52,24 @@ function updateFrog(){
     }
 
     context.clearRect(0, 0, board.width, board.height);
+
+    frog.x += velocityX;
+    if(frog.x > boardWidth){
+        frog.x = boardWidth;
+    }
+    else if(frog.x + frog.width < 0) {
+        frog.x = boardWidth;
+    }
+
+    velocityY += gravity;
+    frog.y = velocityY;
+    if(frog.y > boardHeight){
+        gameover = true;
+    }
+    context.drawImage(frog.img, frog.x, frog.y, board.width, board.height);
+
+    
+
 } 
 
 
