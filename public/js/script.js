@@ -35,13 +35,15 @@ let mosquitoX, mosquitoY;
 let mosquitoImg;
 //const mosquitoSpawnChance = 1;
 
-
+let score = 0;
 
 let gameover = false;
 //physics
 let velocityX, velocityY = 0;
 let initVelocityY = -8; //starting y velocity for frog
 let gravity = 0.4;
+
+
 
 window.onload = function(){
     board = document.getElementById("board");
@@ -111,6 +113,8 @@ function updateFrog(){
         }
         if (detectCollision(frog, platform) && velocityY >= 0) {
             velocityY = initVelocityY; //jump
+            score++;
+            console.log(score);
         }
         context.drawImage(platform.img, platform.x, platform.y, platform.width, platform.height);
     }
@@ -137,6 +141,19 @@ function updateFrog(){
     while (mosquitoArray.length > 0 && mosquitoArray[0].y >= boardHeight) {
         mosquitoArray.shift(); //removes first element from the array
         newMosquito(); //replace with new platform on top
+    }
+
+    //styling and displaying score
+    context.fillStyle = "black";
+    context.font = "24px Arial";
+    context.fillText(score, 5, 20);
+
+    //Gameover text
+    context.font = "36px Arial";
+    let textWidth = context.measureText("Game Over!").width;
+    let xPosition = (boardWidth - textWidth) / 2;
+    if (gameover) {
+        context.fillText("Game Over!", xPosition, boardHeight / 2);
     }
 
 } 
