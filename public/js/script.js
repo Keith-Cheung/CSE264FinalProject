@@ -289,7 +289,7 @@ function placeMosquito(){
     mosquitoArray = [];
 
     
-    let gapBetweenMosquitos = 200;
+    let gapBetweenMosquitos = 100;
 
     //let randomChance = Math.random();
 
@@ -298,7 +298,7 @@ function placeMosquito(){
         let mosquito = {
             img : mosquitoImg,
             x : randomX + i * gapBetweenMosquitos,
-            y : boardHeight - 75*i - 150,
+            y : boardHeight - 75*i - 800,
             width : mosquitoWidth,
             height : mosquitoHeight
         };
