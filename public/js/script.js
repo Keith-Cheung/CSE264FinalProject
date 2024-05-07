@@ -154,6 +154,7 @@ function updateFrog(){
     let xPosition = (boardWidth - textWidth) / 2;
     if (gameover) {
         context.fillText("Game Over!", xPosition, boardHeight / 2);
+        score = 0;
     }
 
 } 
