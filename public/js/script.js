@@ -143,11 +143,29 @@ function updateFrog(){
     //mosquitos
     for(let i = 0; i < mosquitoArray.length; i++){
         let mosquito = mosquitoArray[i];
+        let prevMosquito;
         if (velocityY < 0 && frog.y < boardHeight*3/4) {
-            mosquito.y -= initVelocityY; //slide platform down
+            mosquito.y -= initVelocityY; //slide mosquito down
         }
-        if(detectCollision(frog, mosquito) && velocityY >= 0){
+        if(detectCollision(frog, mosquito) && velocityY <= 0){
             gameover = true;
+            console.log("Game over: " + velocityY + ", " + initVelocityY)
+        }else if(detectCollision(frog, mosquito) && velocityY >= 0){
+            if(mosquito != prevMosquito){
+                score++;
+                //console.log(score);
+            }
+            prevMosquito = mosquito;
+            //Noticed bug where sometimes jumps were too short if begining velocity was around 7.1
+            //So we hard coded if statement to resolve the issue
+            //this if statement fixes the jumps most of the time
+            console.log("Velocity y before: " + velocityY + ", " + initVelocityY)
+            if(velocityY > 7.0 && velocityY < 7.2){
+                velocityY = -8.5; //jump
+            }else{
+                velocityY = initVelocityY; //jump
+            }
+            console.log("Velocity y after: " + velocityY + ", " + initVelocityY)
         }
         context.drawImage(mosquito.img, mosquito.x, mosquito.y, mosquito.width, mosquito.height);
     }
@@ -171,6 +189,7 @@ function updateFrog(){
         context.fillText("Game Over!", xPosition, boardHeight / 2);
         score = 0;
         prevPlatform = null;
+        prevMosquito = null;
     }
 
 } 
@@ -196,7 +215,8 @@ function moveFrog(move){
         velocityX = 0;
         velocityY = initVelocityY;
         gameover = false;
-        placePlatforms()
+        placePlatforms();
+        placeMosquito();
 
     }
 }
@@ -266,7 +286,7 @@ function detectCollision(a, b){
 }
 
 function placeMosquito(){
-    platformArray = [];
+    mosquitoArray = [];
 
     
     let gapBetweenPlatform = 100;
