@@ -23,23 +23,16 @@ let frog = {
 
 //platforms
 let platformArray = [];
-let platformWidth = 90;
-let platformHeight = 31;
+let platformWidth = 60;
+let platformHeight = 18;
 let platformImg;
-
-let lily = {
-    img: null,
-    x: 100,
-    y: 100,
-    width: 90,
-    height: 31
-}
 
 
 let gameover = false;
+//physics
 let velocityX, velocityY = 0;
 let initVelocityY = -8; //starting y velocity for frog
-let gravity = 0.5;
+let gravity = 0.4;
 
 window.onload = function(){
     board = document.getElementById("board");
@@ -47,30 +40,28 @@ window.onload = function(){
     board.height = boardHeight;
     context = board.getContext("2d");
 
-    context.fillStyle = "blue";
-    context.fillRect(frog.x, frog.y, frog.width, frog.height);
+    //context.fillStyle = "blue";
+    //context.fillRect(frog.x, frog.y, frog.width, frog.height);
 
     frogImg = new Image();
     frogImg.src = "../images/frog.png";
     frog.img = frogImg;
 
     frogImg.onload = function(){
+        console.log("frog loaded successfully")
         context.drawImage(frog.img, frog.x, frog.y, frog.width, frog.height);
     }
-    lilyImg = new Image();
-    lilyImg.src = "../images/lilypad_resize.png";
-    lily.img = lilyImg;
 
-    lilyImg.onload = function(){
-        context.drawImage(lily.img, lily.x, lily.y, lily.width, lily.height);
-    }
+    platformImg = new Image();
+    platformImg.src = "../images/lilypad_resize.png";
+
 
     velocityY = initVelocityY;
+    placePlatforms()
     requestAnimationFrame(updateFrog);
     document.addEventListener("keydown", moveFrog);
     
 }
-
 
 
 function updateFrog(){
@@ -80,31 +71,31 @@ function updateFrog(){
         return;
     }
 
-    //context.clearRect(0, 0, board.width, board.height);
+    context.clearRect(0, 0, board.width, board.height);
 
     frog.x += velocityX;
     if(frog.x > boardWidth){
-        frog.x = boardWidth;
+        frog.x = 0;
     }
     else if(frog.x + frog.width < 0) {
         frog.x = boardWidth;
     }
 
     velocityY += gravity;
-    frog.y = velocityY;
+    frog.y += velocityY;
     if(frog.y > boardHeight){
         gameover = true;
     }
-    context.drawImage(frog.img, frog.x, frog.y, board.width, board.height);
+    context.drawImage(frog.img, frog.x, frog.y, frog.width, frog.height);
 
     //platforms
     for (let i = 0; i < platformArray.length; i++) {
         let platform = platformArray[i];
-        if (velocityY < 0 && doodler.y < boardHeight*3/4) {
-            platform.y -= initialVelocityY; //slide platform down
+        if (velocityY < 0 && frog.y < boardHeight*3/4) {
+            platform.y -= initVelocityY; //slide platform down
         }
-        if (detectCollision(doodler, platform) && velocityY >= 0) {
-            velocityY = initialVelocityY; //jump
+        if (detectCollision(frog, platform) && velocityY >= 0) {
+            velocityY = initVelocityY; //jump
         }
         context.drawImage(platform.img, platform.x, platform.y, platform.width, platform.height);
     }
@@ -115,20 +106,15 @@ function updateFrog(){
         newPlatform(); //replace with new platform on top
     }
 
-    
-
 } 
-
-
-
 
 function moveFrog(move){
     if(move.code == "ArrowRight"){
-        velocityX = 3; 
+        velocityX = 2; 
         frog.img = frogImg;
     }
     else if(move.code == "ArrowLeft"){
-        velocityX = -3;
+        velocityX = -2;
         frog.img = frogImg;
     }
     else if(move.code == "Space" && gameover){
@@ -143,32 +129,11 @@ function moveFrog(move){
         velocityX = 0;
         velocityY = initVelocityY;
         gameover = false;
+        placePlatforms()
         //add scoring info
-        //function for placing platforms
 
     }
 }
-
-/*function randomizeCoordinates(min, max) {
-  return Math.floor(Math.random() * (max - min + 1) + min);
-}
-
-function placeLilyPads() {
-  const numLilyPads = 5; // Number of lily pads to place
-  const lilyPadWidth = 90;
-  const lilyPadHeight = 31;
-
-  for (let i = 0; i < numLilyPads; i++) {
-    const lilyPadX = randomizeCoordinates(0, boardWidth - lilyPadWidth);
-    const lilyPadY = randomizeCoordinates(0, boardHeight - lilyPadHeight);
-
-    // Draw lily pad on the canvas
-    context.drawImage(lily.img, lilyPadX, lilyPadY, lilyPadWidth, lilyPadHeight);
-  }
-}
-
-//placeLilyPads();
-*/
 
 
 function placePlatforms() {
@@ -176,7 +141,7 @@ function placePlatforms() {
 
     //starting platforms
     let platform = {
-        img : lilyImg,
+        img : platformImg,
         x : boardWidth/2,
         y : boardHeight - 50,
         width : platformWidth,
@@ -185,19 +150,10 @@ function placePlatforms() {
 
     platformArray.push(platform);
 
-    // platform = {
-    //     img : lilyImg,
-    //     x : boardWidth/2,
-    //     y : boardHeight - 150,
-    //     width : platformWidth,
-    //     height : platformHeight
-    // }
-    // platformArray.push(platform);
-
     for (let i = 0; i < 6; i++) {
-        let randomX = Math.floor(Math.random() * boardWidth*3/4); //(0-1) * boardWidth*3/4
+        let randomX = Math.floor(Math.random() * boardWidth*3/4); 
         let platform = {
-            img : lilyImg,
+            img : platformImg,
             x : randomX,
             y : boardHeight - 75*i - 150,
             width : platformWidth,
@@ -209,9 +165,9 @@ function placePlatforms() {
 }
 
 function newPlatform() {
-    let randomX = Math.floor(Math.random() * boardWidth*3/4); //(0-1) * boardWidth*3/4
+    let randomX = Math.floor(Math.random() * boardWidth*3/4);
     let platform = {
-        img : lilyImg,
+        img : platformImg,
         x : randomX,
         y : -platformHeight,
         width : platformWidth,
@@ -219,6 +175,14 @@ function newPlatform() {
     }
 
     platformArray.push(platform);
+}
+
+function detectCollision(a, b){
+    return a.x < b.x + b.width &&   //a's top left corner doesn't reach b's top right corner
+    a.x + a.width > b.x &&   //a's top right corner passes b's top left corner
+    a.y < b.y + b.height &&  //a's top left corner doesn't reach b's bottom left corner
+    a.y + a.height > b.y;    //a's bottom left corner passes b's top left corner
+
 }
 
 
