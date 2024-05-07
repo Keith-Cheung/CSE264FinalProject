@@ -27,6 +27,15 @@ let platformWidth = 60;
 let platformHeight = 18;
 let platformImg;
 
+//mosquito properties
+let mosquitoArray = [];
+let mosquitoHeight = 46;
+let mosquitoWidth = 46;
+let mosquitoX, mosquitoY;
+let mosquitoImg;
+//const mosquitoSpawnChance = 1;
+
+
 
 let gameover = false;
 //physics
@@ -43,6 +52,7 @@ window.onload = function(){
     //context.fillStyle = "blue";
     //context.fillRect(frog.x, frog.y, frog.width, frog.height);
 
+    //creating images for frog
     frogImg = new Image();
     frogImg.src = "../images/frog.png";
     frog.img = frogImg;
@@ -51,13 +61,18 @@ window.onload = function(){
         console.log("frog loaded successfully")
         context.drawImage(frog.img, frog.x, frog.y, frog.width, frog.height);
     }
-
+    //create image for platform
     platformImg = new Image();
     platformImg.src = "../images/lilypad_resize.png";
 
+    //create image for mosquito
+    mosquitoImg = new Image();
+    mosquitoImg.src = "../images/mosquito.png";
 
     velocityY = initVelocityY;
-    placePlatforms()
+    placePlatforms();
+    placeMosquito(); // call the function to place mosquito
+    console.log(mosquitoArray);
     requestAnimationFrame(updateFrog);
     document.addEventListener("keydown", moveFrog);
     
@@ -106,15 +121,33 @@ function updateFrog(){
         newPlatform(); //replace with new platform on top
     }
 
+    //mosquitos
+    for(let i = 0; i < mosquitoArray.length; i++){
+        let mosquito = mosquitoArray[i];
+        if (velocityY < 0 && frog.y < boardHeight*3/4) {
+            mosquito.y -= initVelocityY; //slide platform down
+        }
+        if(detectCollision(frog, mosquito) && velocityY >= 0){
+            gameover = true;
+        }
+        context.drawImage(mosquito.img, mosquito.x, mosquito.y, mosquito.width, mosquito.height);
+    }
+
+    // clear mosquitos and add new mosquitos
+    while (mosquitoArray.length > 0 && mosquitoArray[0].y >= boardHeight) {
+        mosquitoArray.shift(); //removes first element from the array
+        newMosquito(); //replace with new platform on top
+    }
+
 } 
 
 function moveFrog(move){
     if(move.code == "ArrowRight"){
-        velocityX = 2; 
+        velocityX = 3.5; 
         frog.img = frogImg;
     }
     else if(move.code == "ArrowLeft"){
-        velocityX = -2;
+        velocityX = -3.5;
         frog.img = frogImg;
     }
     else if(move.code == "Space" && gameover){
@@ -139,6 +172,11 @@ function moveFrog(move){
 function placePlatforms() {
     platformArray = [];
 
+    let gapBetweenPlatform = 40;
+
+    let startX = boardWidth / 3;
+
+
     //starting platforms
     let platform = {
         img : platformImg,
@@ -151,10 +189,10 @@ function placePlatforms() {
     platformArray.push(platform);
 
     for (let i = 0; i < 6; i++) {
-        let randomX = Math.floor(Math.random() * boardWidth*3/4); 
+        let randomX = Math.floor(Math.random() * boardWidth*2/4); 
         let platform = {
             img : platformImg,
-            x : randomX,
+            x : randomX + i * gapBetweenPlatform,
             y : boardHeight - 75*i - 150,
             width : platformWidth,
             height : platformHeight
@@ -183,6 +221,42 @@ function detectCollision(a, b){
     a.y < b.y + b.height &&  //a's top left corner doesn't reach b's bottom left corner
     a.y + a.height > b.y;    //a's bottom left corner passes b's top left corner
 
+}
+
+function placeMosquito(){
+    platformArray = [];
+
+    
+    let gapBetweenPlatform = 100;
+
+    let randomChance = Math.random();
+
+    for (let i = 0; i < 1; i++) {
+        let randomX = Math.floor(Math.random() * boardWidth*2/4); 
+        let mosquito = {
+            img : mosquitoImg,
+            x : randomX + i * gapBetweenPlatform,
+            y : boardHeight - 75*i - 150,
+            width : mosquitoWidth,
+            height : mosquitoHeight
+        };
+        
+        mosquitoArray.push(mosquito);
+    }
+
+}
+
+function newMosquito() {
+    let randomX = Math.floor(Math.random() * boardWidth*3/4);
+    let mosquito = {
+        img : mosquitoImg,
+        x : randomX,
+        y : -mosquitoHeight,
+        width : mosquitoWidth,
+        height : mosquitoHeight
+    }
+
+    mosquitoArray.push(mosquito);
 }
 
 
