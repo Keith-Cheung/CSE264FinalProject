@@ -26,6 +26,7 @@ let platformArray = [];
 let platformWidth = 60;
 let platformHeight = 18;
 let platformImg;
+let prevPlatform;
 
 //mosquito properties
 let mosquitoArray = [];
@@ -112,9 +113,12 @@ function updateFrog(){
             platform.y -= initVelocityY; //slide platform down
         }
         if (detectCollision(frog, platform) && velocityY >= 0) {
+            if(platform != prevPlatform){
+                score++;
+                console.log(score);
+            }
+            prevPlatform = platform;
             velocityY = initVelocityY; //jump
-            score++;
-            console.log(score);
         }
         context.drawImage(platform.img, platform.x, platform.y, platform.width, platform.height);
     }
@@ -146,7 +150,7 @@ function updateFrog(){
     //styling and displaying score
     context.fillStyle = "black";
     context.font = "24px Arial";
-    context.fillText(score, 5, 20);
+    context.fillText("Score: " + score, 5, 20);
 
     //Gameover text
     context.font = "36px Arial";
@@ -155,6 +159,7 @@ function updateFrog(){
     if (gameover) {
         context.fillText("Game Over!", xPosition, boardHeight / 2);
         score = 0;
+        prevPlatform = null;
     }
 
 } 
