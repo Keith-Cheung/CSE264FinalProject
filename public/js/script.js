@@ -41,7 +41,7 @@ let score = 0;
 let gameover = false;
 //physics
 let velocityX, velocityY = 0;
-let initVelocityY = -8; //starting y velocity for frog
+let initVelocityY = -7.5; //starting y velocity for frog
 let gravity = 0.4;
 
 
@@ -78,6 +78,7 @@ window.onload = function(){
     console.log(mosquitoArray);
     requestAnimationFrame(updateFrog);
     document.addEventListener("keydown", moveFrog);
+    document.addEventListener("keyup", StopXmovement);
     
 }
 
@@ -115,10 +116,20 @@ function updateFrog(){
         if (detectCollision(frog, platform) && velocityY >= 0) {
             if(platform != prevPlatform){
                 score++;
-                console.log(score);
+                //console.log(score);
             }
             prevPlatform = platform;
-            velocityY = initVelocityY; //jump
+
+            //Noticed bug where sometimes jumps were too short if begining velocity was around 7.1
+            //So we hard coded if statement to resolve the issue
+            //this if statement fixes the jumps most of the time
+            console.log("Velocity y before: " + velocityY + ", " + initVelocityY)
+            if(velocityY > 7.0 && velocityY < 7.2){
+                velocityY = -8.5; //jump
+            }else{
+                velocityY = initVelocityY; //jump
+            }
+            console.log("Velocity y after: " + velocityY + ", " + initVelocityY)
         }
         context.drawImage(platform.img, platform.x, platform.y, platform.width, platform.height);
     }
@@ -166,11 +177,11 @@ function updateFrog(){
 
 function moveFrog(move){
     if(move.code == "ArrowRight"){
-        velocityX = 3.5; 
+        velocityX = 4; 
         frog.img = frogImg;
     }
     else if(move.code == "ArrowLeft"){
-        velocityX = -3.5;
+        velocityX = -4;
         frog.img = frogImg;
     }
     else if(move.code == "Space" && gameover){
@@ -186,10 +197,18 @@ function moveFrog(move){
         velocityY = initVelocityY;
         gameover = false;
         placePlatforms()
-        //add scoring info
 
     }
 }
+
+
+function StopXmovement(move) {
+    //Stop horizontal movement when arrow keys are released
+    if (move.code == "ArrowRight" || move.code == "ArrowLeft") {
+        velocityX = 0;
+    }
+}
+
 
 
 function placePlatforms() {
