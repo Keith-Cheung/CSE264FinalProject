@@ -236,7 +236,7 @@ function placePlatforms() {
 
     let gapBetweenPlatform = 40;
 
-    let startX = boardWidth / 3;
+    //let startX = boardWidth / 3;
 
 
     //starting platforms
@@ -289,15 +289,15 @@ function placeMosquito(){
     mosquitoArray = [];
 
     
-    let gapBetweenPlatform = 100;
+    let gapBetweenMosquitos = 200;
 
-    let randomChance = Math.random();
+    //let randomChance = Math.random();
 
     for (let i = 0; i < 1; i++) {
         let randomX = Math.floor(Math.random() * boardWidth*2/4); 
         let mosquito = {
             img : mosquitoImg,
-            x : randomX + i * gapBetweenPlatform,
+            x : randomX + i * gapBetweenMosquitos,
             y : boardHeight - 75*i - 150,
             width : mosquitoWidth,
             height : mosquitoHeight
