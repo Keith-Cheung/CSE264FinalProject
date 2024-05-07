@@ -110,7 +110,7 @@ function updateFrog(){
     //platforms
     for (let i = 0; i < platformArray.length; i++) {
         let platform = platformArray[i];
-        if (velocityY < 0 && frog.y < boardHeight*3/4) {
+        if (velocityY < 0 && frog.y < boardHeight*0.8) {
             platform.y -= initVelocityY; //slide platform down
         }
         if (detectCollision(frog, platform) && velocityY >= 0) {
@@ -144,7 +144,7 @@ function updateFrog(){
     for(let i = 0; i < mosquitoArray.length; i++){
         let mosquito = mosquitoArray[i];
         let prevMosquito;
-        if (velocityY < 0 && frog.y < boardHeight*3/4) {
+        if (velocityY < 0 && frog.y < boardHeight*0.8) {
             mosquito.y -= initVelocityY; //slide mosquito down
         }
         if(detectCollision(frog, mosquito) && velocityY <= 0){
